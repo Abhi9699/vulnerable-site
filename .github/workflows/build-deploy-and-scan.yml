@@ -87,7 +87,7 @@ jobs:
           sudo apt-get update && sudo apt-get install -y openjdk-11-jre-headless
           wget -q -O - https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Linux.tar.gz | tar -xzf - -C /opt
           export PATH="/opt/ZAP_2.11.0:$PATH"
-
+          
       - name: Run ZAP Scan
         run: |
           zap-baseline.py -t https://your-web-app-url.com -r zap-report.html
