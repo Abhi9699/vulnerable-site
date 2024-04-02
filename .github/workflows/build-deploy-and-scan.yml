@@ -1,4 +1,4 @@
-name: Build site, deploy to Azure, scan with Dastardly
+name: Build site, deploy to Azure, scan with Dastardly and OWASP ZAP
 
 on:
   push:
@@ -61,7 +61,6 @@ jobs:
   scan-with-dastardly:
     name: Scan with Dastardly
     runs-on: ubuntu-latest
-    #needs: deploy-to-azure
 
     steps:
       - name: Run Dastardly Scan
@@ -78,13 +77,15 @@ jobs:
           require_tests: true
 
   zap_scan:
+    name: Scan with OWASP ZAP
     runs-on: ubuntu-latest
-    name: Scan ZAP website
+
     steps:
-      - name: ZAP Scan
+      - name: ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.3.0
         with:
-          target: 'https://www.zaproxy.org/'
-      - name: Generate OWASP ZAP Report
-        run: docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t <your_application_url> -r zap-report.html
+          target: 'https://vulnerable-site.azurewebsites.net/'
 
+      - name: Generate OWASP ZAP Report
+        run: |
+          docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t https://vulnerable-site.azurewebsites.net/ -r zap-report.html
