@@ -77,15 +77,21 @@ jobs:
           require_tests: true
 
   zap_scan:
-    name: Scan with OWASP ZAP
     runs-on: ubuntu-latest
-
     steps:
-      - name: ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.3.0
-        with:
-          target: 'https://vulnerable-site.azurewebsites.net/'
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-      - name: Generate OWASP ZAP Report
+      - name: Set up ZAP Proxy
         run: |
-          docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t https://vulnerable-site.azurewebsites.net/ -r zap-report.html
+          sudo apt-get update && sudo apt-get install -y openjdk-11-jre-headless
+          wget -q -O - https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Linux.tar.gz | tar -xzf - -C /opt
+          export PATH="/opt/ZAP_2.11.0:$PATH"
+
+      - name: Run ZAP Scan
+        run: |
+          zap-baseline.py -t https://your-web-app-url.com -r zap-report.html
+          
+      - name: Generate ZAP Report
+        run: |
+          zap-cli report -o zap-report.html -f html
