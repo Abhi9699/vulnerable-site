@@ -90,7 +90,7 @@ jobs:
           
       - name: Run ZAP Scan
         run: |
-          zap-baseline.py -t https://your-web-app-url.com -r zap-report.html
+          zap-baseline.py -t http://testphp.vulnweb.com -r zap-report.html
           
       - name: Generate ZAP Report
         run: |
