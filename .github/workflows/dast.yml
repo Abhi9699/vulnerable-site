@@ -19,11 +19,11 @@ jobs:
       - name: Run OWASP ZAP DAST Scan
         uses: zaproxy/action-baseline@v0.4.0
         with:
-          target: 'http://testphp.vulnweb.com/'
+          target: 'http://www.itsecgames.com/'
 
       - name: Generate ZAP Report
         run: |
-          docker run --rm -v ${PWD}:/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://testphp.vulnweb.com/ -r zap-report.html
+          docker run --rm -v ${PWD}:/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://www.itsecgames.com/ -r zap-report.html
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v2
