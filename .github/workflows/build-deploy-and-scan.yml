@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-test:
     name: Build and test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -37,7 +37,7 @@ jobs:
 
   deploy-to-azure:
     name: Deploy to Azure
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build-and-test
     environment:
       name: 'Production'
@@ -60,7 +60,7 @@ jobs:
 
   scan-with-dastardly:
     name: Scan with Dastardly
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Run Dastardly Scan
@@ -77,20 +77,19 @@ jobs:
           require_tests: true
 
   zap_scan:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
       - name: Set up ZAP Proxy
         run: |
-          sudo apt-get update && sudo apt-get install -y openjdk-11-jre-headless
-          wget -q -O - https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Linux.tar.gz | tar -xzf - -C /opt
-          export PATH="/opt/ZAP_2.11.0:$PATH"
+          choco install adoptopenjdk --version=11 -y
+          wget -q -O - https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Windows.exe | .\ZAP_2.11.0_Windows.exe /S
           
       - name: Run ZAP Scan
         run: |
-          zap-baseline.py -t http://testphp.vulnweb.com -r zap-report.html
+          zap-baseline.py -t https://your-web-app-url.com -r zap-report.html
           
       - name: Generate ZAP Report
         run: |
