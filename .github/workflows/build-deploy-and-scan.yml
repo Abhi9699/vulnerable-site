@@ -76,3 +76,13 @@ jobs:
           check_name: 'Dastardly Scan Report'
           report_paths: '**/dastardly-report.xml'
           require_tests: true
+  
+  owaspzap_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.3.0
+        with:
+          target: 'https://www.zaproxy.org/'
+        
+
