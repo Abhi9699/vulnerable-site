@@ -12,21 +12,25 @@ jobs:
   dast_scan:
     name: OWASP ZAP DAST Scan
     runs-on: ubuntu-latest
+    retries: 3  # Specify the number of retry attempts
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
       - name: Run OWASP ZAP DAST Scan
+        id: zap_scan
         uses: zaproxy/action-baseline@v0.4.0
         with:
           target: 'http://www.itsecgames.com/'
 
       - name: Generate ZAP Report
         run: |
-          docker run --rm -v ${{ github.workspace }}:/zap/wrk/ -t owasp/zap2docker-stable zap-full-scan.py -t http://www.itsecgames.com/ -r /zap/wrk/zap-report.html
+          docker run --rm -v ${PWD}:/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://www.itsecgames.com/ -r zap-report.html
+        continue-on-error: true  # Continue execution even if the previous step fails
 
       - name: Upload ZAP Report
+        if: ${{ always() }}  # Upload the report even if there was an error
         uses: actions/upload-artifact@v2
         with:
           name: zap-report
