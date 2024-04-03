@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
   dast_scan:
     name: OWASP ZAP DAST Scan
@@ -23,7 +24,7 @@ jobs:
 
       - name: Generate ZAP Report
         run: |
-          docker run --rm -v ${PWD}:/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t http://www.itsecgames.com/ -r zap-report.html
+          docker run --rm -v ${{ github.workspace }}:/zap/wrk/ -t owasp/zap2docker-stable zap-full-scan.py -t http://www.itsecgames.com/ -r /zap/wrk/zap-report.html
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v2
